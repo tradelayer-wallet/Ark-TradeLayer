@@ -1,0 +1,209 @@
+{
+  "$comment": "SHARED test vectors: vtxo-loan-system TypeScript signer AND the .ark on-chain matchers (CollateralizedLoan.ark / UnsecuredLoan.ark) must reproduce these bytes exactly. Field encodings: eventIdHash = sha256(utf8(eventId)); oraclePublicKey is the 32-byte x-only key; lenpfx(x) = 4-byte big-endian length of x followed by x (the .ark builtin encoding); each attestation message = lenpfx(eventIdHash) || lenpfx(oracleKeyX) || lenpfx(descriptorHash) || lenpfx(maturityTime u64 BE) || lenpfx(outcome utf8) hashed under BIP-340 tag 'DLC/oracle/attestation/v1'. Signatures are standard BIP-340 over the message hash. The private key here is TEST-ONLY (published on purpose, like the BIP-340 test vectors).",
+  "version": 1,
+  "network": "bitcoin_regtest",
+  "keyDerivation": {
+    "mnemonic": "test test test test test test test test test test test junk",
+    "oraclePath": "m/48'/1'/0'/0'/0",
+    "noncePurpose": 585
+  },
+  "maturityTime": 1767225600,
+  "refusals": [
+    {
+      "name": "empty eventId",
+      "eventId": "",
+      "expect": "refused"
+    }
+  ],
+  "vectors": [
+    {
+      "name": "numeric-signed-decimal",
+      "eventId": "btc-usd-2026-01-01",
+      "eventIdHash": "4e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7",
+      "oraclePublicKey": "8eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e",
+      "oraclePrivateKey": "14d51665a51953a247317f39068f2a5c8a62bd5e409306b8b2e3371101599e97",
+      "descriptor": {
+        "type": "numeric",
+        "base": 10,
+        "numDigits": 4,
+        "unit": "USD",
+        "precision": 2,
+        "signed": true
+      },
+      "descriptorHash": "829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c0",
+      "maturityTime": 1767225600,
+      "outcomes": [
+        "+",
+        "1",
+        "2",
+        "3",
+        "4"
+      ],
+      "outcomesHex": [
+        "2b",
+        "31",
+        "32",
+        "33",
+        "34"
+      ],
+      "attestationMessages": [
+        "000000204e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c000000008000000006955b900000000012b",
+        "000000204e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c000000008000000006955b9000000000131",
+        "000000204e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c000000008000000006955b9000000000132",
+        "000000204e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c000000008000000006955b9000000000133",
+        "000000204e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c000000008000000006955b9000000000134"
+      ],
+      "attestationMessageHashes": [
+        "dc73f488e15780e163bc55a62ad01980f8542d54166915283feffc43a372fb25",
+        "0898963bf7b149f7e1d81435925861f5ac3bf56f6f5b949946a9c90896bdafeb",
+        "3b02be07df606f0fe0942acbe7d279ed3f116a20bac4ce0bac49fa5f57216a3e",
+        "4cb99c2ebd7f9fccd08d0afeefb0248b4ab8e0bda42e1f2db9e33039e2f2f16e",
+        "1921df42262655bd29ccaa58a20fbff416881de3a79c9e2142bd6f4d48c795dd"
+      ],
+      "attestationSignatures": [
+        "53210fa3872cac55b9119683f2a84bc881de7ab1c2498d7737b8bd7956570d7d03146e333d0a82a35d8edb33bbcc7630343f12831a2d12cd4894fd9db216ecf1",
+        "003f18caf746e98c16c61ff7f6267ca42f7ba40214f6ecc4558d418092b3c93cd259c1cefc5dc269d2cc45e6d52fe073d33307c9c7b1bb06e740c9bb8433031e",
+        "d22bca181e36d11eba8e6c24283650883f626f182c51675d9a5c8c1f43f32a575e2fb5330d75a59c22b640fc64ea58f3c4f55bcde31a53716c21753a12fe3ce9",
+        "1441aa0c493b82ce5086ce19de57ce214cb60c3d00a8e11cc21bd104c11e95bf398a291c40feaaa4b7e945f666b96946b94257d38b34ec1ba5afceda89579cd2",
+        "16e4450dff4f5d809d638f2cf50bc635793906ef64f22b3b471efb875b6e6c2c6be66704787d516aa0f4b1878d6cf49ce6bb8e41582e990b8c3a209ea8718028"
+      ],
+      "noncePoints": [
+        "53210fa3872cac55b9119683f2a84bc881de7ab1c2498d7737b8bd7956570d7d",
+        "003f18caf746e98c16c61ff7f6267ca42f7ba40214f6ecc4558d418092b3c93c",
+        "d22bca181e36d11eba8e6c24283650883f626f182c51675d9a5c8c1f43f32a57",
+        "1441aa0c493b82ce5086ce19de57ce214cb60c3d00a8e11cc21bd104c11e95bf",
+        "16e4450dff4f5d809d638f2cf50bc635793906ef64f22b3b471efb875b6e6c2c"
+      ],
+      "announcementMessage": "000000204e5852cfa2bd4a331f9e1bc67de47cf20331bb732f2eac91104d71b1446d2ec7000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020829a09dc0aae9f0c0523f2fc4f651fc99e6f3b756b2498cf01706f931d2301c000000008000000006955b9000000002053210fa3872cac55b9119683f2a84bc881de7ab1c2498d7737b8bd7956570d7d00000020003f18caf746e98c16c61ff7f6267ca42f7ba40214f6ecc4558d418092b3c93c00000020d22bca181e36d11eba8e6c24283650883f626f182c51675d9a5c8c1f43f32a57000000201441aa0c493b82ce5086ce19de57ce214cb60c3d00a8e11cc21bd104c11e95bf0000002016e4450dff4f5d809d638f2cf50bc635793906ef64f22b3b471efb875b6e6c2c",
+      "announcementMessageHash": "b71d3addef306b52739154ea316741e6e87c726df5a58e9fb7ae362b5efce104"
+    },
+    {
+      "name": "numeric-unsigned-binary-base",
+      "eventId": "loan-42-repaid",
+      "eventIdHash": "9589759d20cab1a6ea3c125fde86bc28e3e5334bc29a81896dd964b607e5f225",
+      "oraclePublicKey": "8eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e",
+      "oraclePrivateKey": "14d51665a51953a247317f39068f2a5c8a62bd5e409306b8b2e3371101599e97",
+      "descriptor": {
+        "type": "numeric",
+        "base": 2,
+        "numDigits": 4,
+        "unit": "BTC",
+        "precision": 0,
+        "signed": false
+      },
+      "descriptorHash": "21be8d3a0ba8a2d48097f64d9f1bffee8052307fb31072cbd5d873848b5d997c",
+      "maturityTime": 1767225600,
+      "outcomes": [
+        "0",
+        "1",
+        "0",
+        "1"
+      ],
+      "outcomesHex": [
+        "30",
+        "31",
+        "30",
+        "31"
+      ],
+      "attestationMessages": [
+        "000000209589759d20cab1a6ea3c125fde86bc28e3e5334bc29a81896dd964b607e5f225000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e0000002021be8d3a0ba8a2d48097f64d9f1bffee8052307fb31072cbd5d873848b5d997c00000008000000006955b9000000000130",
+        "000000209589759d20cab1a6ea3c125fde86bc28e3e5334bc29a81896dd964b607e5f225000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e0000002021be8d3a0ba8a2d48097f64d9f1bffee8052307fb31072cbd5d873848b5d997c00000008000000006955b9000000000131",
+        "000000209589759d20cab1a6ea3c125fde86bc28e3e5334bc29a81896dd964b607e5f225000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e0000002021be8d3a0ba8a2d48097f64d9f1bffee8052307fb31072cbd5d873848b5d997c00000008000000006955b9000000000130",
+        "000000209589759d20cab1a6ea3c125fde86bc28e3e5334bc29a81896dd964b607e5f225000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e0000002021be8d3a0ba8a2d48097f64d9f1bffee8052307fb31072cbd5d873848b5d997c00000008000000006955b9000000000131"
+      ],
+      "attestationMessageHashes": [
+        "58666db72a11264c80f7d7099bbdd0263ea9e644a856742e3998865399916645",
+        "a5934dae9b258cc5924dda8bc840cc3df870bee3345b48054da06e7fb3b0119c",
+        "58666db72a11264c80f7d7099bbdd0263ea9e644a856742e3998865399916645",
+        "a5934dae9b258cc5924dda8bc840cc3df870bee3345b48054da06e7fb3b0119c"
+      ],
+      "attestationSignatures": [
+        "14efd5bd911fb2fc36ee0fc024f4d74012768f46d81c2606ee3bd74852e68d8dd9d07ba379ae07b78aa17df645c9a7a4a749b5fd2a3dd18f2e375f28a4455935",
+        "a6fbca9c1ea829827b0e712eb4264f8e30f0195443e1e3f8e811bd60c59350e28ad1b679b6ea99b19c3e7de5f5411c368b3a1af5e165da8cb849a33a90d78138",
+        "b090868f28c00b8e31a3c1af4e062b6cf07fb81ec272487b6da43ebad19dcdffc71eea208dda63a8fbcec808622c3b2def7034d0d76235fbe5097f942532dff1",
+        "acda7aa32698f1a6ffb4dc2f25deebfdaa9d3dcc267be37b209b5dc1bcac22f050940eefe8f151701d0d41199103057253733bc2696b72b3fbde796eac2a5a76"
+      ],
+      "noncePoints": [
+        "14efd5bd911fb2fc36ee0fc024f4d74012768f46d81c2606ee3bd74852e68d8d",
+        "a6fbca9c1ea829827b0e712eb4264f8e30f0195443e1e3f8e811bd60c59350e2",
+        "b090868f28c00b8e31a3c1af4e062b6cf07fb81ec272487b6da43ebad19dcdff",
+        "acda7aa32698f1a6ffb4dc2f25deebfdaa9d3dcc267be37b209b5dc1bcac22f0"
+      ],
+      "announcementMessage": "000000209589759d20cab1a6ea3c125fde86bc28e3e5334bc29a81896dd964b607e5f225000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e0000002021be8d3a0ba8a2d48097f64d9f1bffee8052307fb31072cbd5d873848b5d997c00000008000000006955b9000000002014efd5bd911fb2fc36ee0fc024f4d74012768f46d81c2606ee3bd74852e68d8d00000020a6fbca9c1ea829827b0e712eb4264f8e30f0195443e1e3f8e811bd60c59350e200000020b090868f28c00b8e31a3c1af4e062b6cf07fb81ec272487b6da43ebad19dcdff00000020acda7aa32698f1a6ffb4dc2f25deebfdaa9d3dcc267be37b209b5dc1bcac22f0",
+      "announcementMessageHash": "e02092bfd7abbad632bc7c7fe5fd9b76ac8c1d342bcff07b52ffc8ab70bb232d"
+    },
+    {
+      "name": "binary-payment",
+      "eventId": "loan-42-payment-2026-01",
+      "eventIdHash": "d7d67e0486af4ad39cab2780a89b183d595ab07d4e0780ee6a9b32791f09ba01",
+      "oraclePublicKey": "8eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e",
+      "oraclePrivateKey": "14d51665a51953a247317f39068f2a5c8a62bd5e409306b8b2e3371101599e97",
+      "descriptor": {
+        "type": "binary",
+        "outcomes": [
+          "paid",
+          "unpaid"
+        ]
+      },
+      "descriptorHash": "144f62e56e3d9e12fa715e50d51ed4138b817f79206e17038aa62f5074653826",
+      "maturityTime": 1767225600,
+      "outcomes": [
+        "paid"
+      ],
+      "outcomesHex": [
+        "70616964"
+      ],
+      "attestationMessages": [
+        "00000020d7d67e0486af4ad39cab2780a89b183d595ab07d4e0780ee6a9b32791f09ba01000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020144f62e56e3d9e12fa715e50d51ed4138b817f79206e17038aa62f507465382600000008000000006955b9000000000470616964"
+      ],
+      "attestationMessageHashes": [
+        "c994423170fa62c54204c65f41454cf23026a6308f40797c4fbf763111513c83"
+      ],
+      "attestationSignatures": [
+        "317a8a42d3b0527d850203fd9283427ab6b9bf107d0778989e624f11acf8e012e464033d45b89208c49f8ba4d6bbbda1934cf199b64243bc6d173c60207b2d75"
+      ],
+      "noncePoints": [
+        "317a8a42d3b0527d850203fd9283427ab6b9bf107d0778989e624f11acf8e012"
+      ],
+      "announcementMessage": "00000020d7d67e0486af4ad39cab2780a89b183d595ab07d4e0780ee6a9b32791f09ba01000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020144f62e56e3d9e12fa715e50d51ed4138b817f79206e17038aa62f507465382600000008000000006955b90000000020317a8a42d3b0527d850203fd9283427ab6b9bf107d0778989e624f11acf8e012",
+      "announcementMessageHash": "c40e33b02c621d3a85186345aeeaf9782d1bf47ec8ea4bd64230e06212c9dee1"
+    },
+    {
+      "name": "enum-loan-state",
+      "eventId": "loan-7-state-2026-01",
+      "eventIdHash": "ea334137894542114da0c7e1b1dd399a9c39abc54c1b64e433fc1eee7fb8930b",
+      "oraclePublicKey": "8eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e",
+      "oraclePrivateKey": "14d51665a51953a247317f39068f2a5c8a62bd5e409306b8b2e3371101599e97",
+      "descriptor": {
+        "type": "enum",
+        "outcomes": [
+          "fulfilled",
+          "defaulted",
+          "expired"
+        ]
+      },
+      "descriptorHash": "a18092e9d918a76f1e61b1f01d7df5f1309daa49b1691e64d83da1949e1e5257",
+      "maturityTime": 1767225600,
+      "outcomes": [
+        "defaulted"
+      ],
+      "outcomesHex": [
+        "64656661756c746564"
+      ],
+      "attestationMessages": [
+        "00000020ea334137894542114da0c7e1b1dd399a9c39abc54c1b64e433fc1eee7fb8930b000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020a18092e9d918a76f1e61b1f01d7df5f1309daa49b1691e64d83da1949e1e525700000008000000006955b9000000000964656661756c746564"
+      ],
+      "attestationMessageHashes": [
+        "ba2a2e288430704f8330d575e64dbfbccb14d5fd11fd16d38ccb6bd13bce3230"
+      ],
+      "attestationSignatures": [
+        "5dd95709161d53cff72a4793ad2f202a3c256950f180783896bbdbd9c30fbc70ab7db44b9952e4dc788c2c023a8603800fe85435ac039b62155aeaa7f1b32eff"
+      ],
+      "noncePoints": [
+        "5dd95709161d53cff72a4793ad2f202a3c256950f180783896bbdbd9c30fbc70"
+      ],
+      "announcementMessage": "00000020ea334137894542114da0c7e1b1dd399a9c39abc54c1b64e433fc1eee7fb8930b000000208eead9aaf2bb8800aae8dfe44382eac6c731c8bb2ced4a2eed807ecb7861469e00000020a18092e9d918a76f1e61b1f01d7df5f1309daa49b1691e64d83da1949e1e525700000008000000006955b900000000205dd95709161d53cff72a4793ad2f202a3c256950f180783896bbdbd9c30fbc70",
+      "announcementMessageHash": "3e78f29a0c49770359d1a1ec030a2d2112bea7927de0f1399e80201726975f16"
+    }
+  ]
+}

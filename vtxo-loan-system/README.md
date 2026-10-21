@@ -158,7 +158,12 @@ const network = getBitcoinNetwork(config.network);
 
 // Initialize attestation engine
 const keyProvider = createKeyProvider(config.keys);
-const engine = new AttestationEngine({ network, keyProvider });
+const engine = new AttestationEngine({
+  network,
+  keyProvider,
+  usedNonceRegistryPath: config.usedNonceRegistryPath,
+  usedNonceRegistryInit: config.usedNonceRegistryInit,
+});
 await engine.initialize();
 
 // Create event announcement for payment verification
@@ -318,12 +323,28 @@ CLOUD_SECRET_ID=oracle-master-key
 The system uses **deterministic nonce derivation** to prevent nonce reuse:
 
 ```
-k = privkey_base + H_tag("DLC/oracle/nonce/v0", R_base || eventId)
+eventIdHash = sha256(utf8(eventId))                  // printable-ASCII event ids
+index       = H_tag("DLC/oracle/nonce-index/v1", lenpfx(eventIdHash) || be32(i)) mod 2^31
+nonce_key   = BIP32(m/585'/coin'/0'/0'/index')
+k           = nonce_key + H_tag("DLC/oracle/nonce-tweak/v1", lenpfx(R_base) || lenpfx(eventIdHash))
 ```
 
 - Each event has unique nonces
 - Nonces are reproducible for signing
-- No nonce is ever reused across events
+- The derivation-index hash and the nonce tweak use **separate domain tags**
+- A **used-nonce registry** (`src/attestation/used-nonce-registry.ts`) is the
+  fail-closed backstop: single-writer for the process lifetime, durable
+  append-only history with a digest chain, and refusal to run on an
+  in-memory-only registry outside development. Reusing a `k` across two
+  messages leaks the oracle key (`x = (s1 - s2) / (e1 - e2)`), so a second
+  writer or a deleted/truncated history is fatal at startup, never a warning.
+  The registry is never created implicitly: a missing registry refuses to
+  start. Set `USED_NONCE_REGISTRY_INIT=1` for the first start of a signer only,
+  then unset it. The first creation also writes a marker, `<registry>.created`.
+  While the marker exists, a missing registry is refused even with the flag:
+  restore the registry from backup, and do not re-init. To move an existing
+  registry, move its file and its `.anchor` together to `USED_NONCE_REGISTRY_PATH`
+  with the same names; moving the file alone is refused.
 
 ### Oracle Trust
 

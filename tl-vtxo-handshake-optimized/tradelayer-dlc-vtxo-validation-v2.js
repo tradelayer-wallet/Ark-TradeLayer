@@ -94,40 +94,48 @@ const DLCVTXOValidation = {
    * TL consensus checks templateId allowlist + onchain UTXO validity."
    */
   validateDLCVTXOMint: async (sender, params, txid) => {
-    params.valid = true;
-    params.reason = '';
+    // Reject-then-validate (H6): fail closed unless every check passes.
+    params.valid = false;
+    params.reason = 'Validation incomplete';
 
     console.log('[DLC/VTXO] Validating ARK_WRAP_MINT:', params);
 
     try {
       // 1. Verify this is a DLC/VTXO token type
       if (params.type !== 'dlc-vtxo' && params.type !== 'ark-vtxo') {
-        params.valid = false;
         params.reason = 'Not a DLC/VTXO or ARK-VTXO token type';
         return params;
       }
 
-      // 2. Validate using Ark bridge
+      // 2. Validate the mint amount before any comparison/arithmetic (H6)
+      const valueSats = params.initialAmount;
+      if (!Number.isSafeInteger(valueSats) || valueSats <= 0) {
+        params.reason = 'Invalid mint amount: must be a positive safe integer (satoshis)';
+        return params;
+      }
+
+      // 3. Validate using Ark bridge
       const validation = await arkBridge.validateMint({
         templateId: params.templateId,
         aspId: params.aspId,
         depositTxid: params.fundingTxid || params.depositTxid,
         depositVout: params.fundingVout || params.depositVout,
-        valueSats: params.initialAmount
+        valueSats: valueSats
       });
 
       if (!validation.valid) {
-        params.valid = false;
         params.reason = validation.reason || validation.error;
         return params;
       }
 
       console.log('[DLC/VTXO] Mint validation successful');
 
-      // 3. Store additional metadata
+      // 4. Store additional metadata
       params.commitment = validation.commitment;
       params.taprootOutputKey = validation.commitment.taprootOutputKey;
 
+      params.valid = true;
+      params.reason = '';
       return params;
 
     } catch (error) {
@@ -151,38 +159,44 @@ const DLCVTXOValidation = {
    * TL marks redeem as complete."
    */
   validateDLCVTXOBurn: async (sender, params, txid) => {
-    params.valid = true;
-    params.reason = '';
+    // Reject-then-validate (H6): fail closed unless every check passes.
+    params.valid = false;
+    params.reason = 'Validation incomplete';
 
     console.log('[DLC/VTXO] Validating burn/redeem:', params);
 
     try {
-      // 1. Verify user has sufficient balance
-      const balance = await TallyMap.getTally(sender, params.propertyId);
-      if (!balance || balance.available < params.amount) {
-        params.valid = false;
-        params.reason = `Insufficient balance (have: ${balance?.available || 0}, need: ${params.amount})`;
+      // 1. Validate the burn amount before any comparison/arithmetic (H6)
+      const burnAmount = params.amount;
+      if (!Number.isSafeInteger(burnAmount) || burnAmount <= 0) {
+        params.reason = 'Invalid burn amount: must be a positive safe integer (satoshis)';
         return params;
       }
 
-      // 2. Get token metadata
+      // 2. Verify user has sufficient balance
+      const balance = await TallyMap.getTally(sender, params.propertyId);
+      const available = balance ? balance.available : 0;
+      if (!Number.isSafeInteger(available) || available < burnAmount) {
+        params.reason = `Insufficient balance (have: ${balance?.available || 0}, need: ${burnAmount})`;
+        return params;
+      }
+
+      // 3. Get token metadata
       const tokenData = await PropertyList.getPropertyData(params.propertyId);
       if (!tokenData || (tokenData.type !== 'dlc-vtxo' && tokenData.type !== 'ark-vtxo')) {
-        params.valid = false;
         params.reason = 'Token is not DLC/VTXO or ARK-VTXO type';
         return params;
       }
 
-      // 3. Verify redemption transaction is provided
+      // 4. Verify redemption transaction is provided
       if (!params.redemptionTxid && !params.redeemTxid) {
-        params.valid = false;
         params.reason = 'Redemption transaction required';
         return params;
       }
 
       const redeemTxid = params.redemptionTxid || params.redeemTxid;
 
-      // 4. Validate using Ark bridge
+      // 5. Validate using Ark bridge
       const validation = await arkBridge.validateBurn({
         templateId: tokenData.templateId,
         aspId: tokenData.aspId,
@@ -192,21 +206,22 @@ const DLCVTXOValidation = {
       });
 
       if (!validation.valid) {
-        params.valid = false;
         params.reason = validation.reason || validation.error;
         return params;
       }
 
       console.log('[DLC/VTXO] Burn validation successful');
 
-      // 5. Verify released value matches burn amount
+      // 6. Verify released value matches burn amount
       const FEE_TOLERANCE = 10000; // 10,000 sats tolerance for fees
-      if (validation.releasedValue < (params.amount - FEE_TOLERANCE)) {
-        params.valid = false;
-        params.reason = `Released value (${validation.releasedValue}) less than burn amount (${params.amount})`;
+      const releasedValue = validation.releasedValue;
+      if (!Number.isSafeInteger(releasedValue) || releasedValue < (burnAmount - FEE_TOLERANCE)) {
+        params.reason = `Released value (${releasedValue}) less than burn amount (${burnAmount})`;
         return params;
       }
 
+      params.valid = true;
+      params.reason = '';
       return params;
 
     } catch (error) {

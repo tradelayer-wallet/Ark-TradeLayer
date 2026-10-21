@@ -67,6 +67,11 @@ export class PaymentWitness implements EventWitness<PaymentData> {
   private blockchainClient: BlockchainClient;
 
   constructor(config: PaymentWitnessConfig, client: BlockchainClient) {
+    // A zero amount is met by an empty transfer list (totalReceived >= 0), so it
+    // would report "paid" with no payment at all.
+    if (!(Number.isFinite(config.expectedAmount) && config.expectedAmount > 0)) {
+      throw new Error("PaymentWitness: expectedAmount must be a positive number");
+    }
     this.config = config;
     this.blockchainClient = client;
   }
@@ -288,6 +293,11 @@ export class CompositeWitness implements EventWitness<CompositeData> {
   private logic: "and" | "or";
 
   constructor(witnesses: EventWitness[], logic: "and" | "or" = "and") {
+    // Over no members, AND is vacuously satisfied: an empty composite would
+    // report "satisfied" without any evidence.
+    if (witnesses.length === 0) {
+      throw new Error("CompositeWitness needs at least one witness");
+    }
     this.witnesses = witnesses;
     this.logic = logic;
   }

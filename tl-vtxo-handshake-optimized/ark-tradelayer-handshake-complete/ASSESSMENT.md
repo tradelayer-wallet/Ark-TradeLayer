@@ -160,6 +160,14 @@ validateBurn({ templateId, aspId, depositTxid, depositVout, redeemTxid })
 
 ### 2. `tradelayer-dlc-vtxo-validation-v2.js` (200 lines)
 
+> **SECURITY NOTE (H6):** this copy is a byte-identical mirror of
+> `../tradelayer-dlc-vtxo-validation-v2.js` and MUST stay that way. This
+> validator is reject-by-default (`params.valid = false` until every check
+> passes); this snapshot previously shipped an unhardened copy that defaulted
+> `valid = true` and silently accepted unvalidated mints/burns. If you edit
+> either copy, copy it over the other - the behavioral harness fails when the
+> two diverge.
+
 **Integration with TradeLayer validation:**
 - Uses `ArkTradeLayerBridge` for all validation
 - Follows spec exactly

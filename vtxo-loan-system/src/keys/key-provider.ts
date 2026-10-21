@@ -11,6 +11,8 @@ import { Result, ok, err } from "neverthrow";
 import * as bip39 from "bip39";
 import BIP32Factory, { BIP32Interface } from "bip32";
 import * as ecc from "tiny-secp256k1";
+import { inspect } from "util";
+import { inspectRedacted, redactedView } from "../redaction";
 
 const bip32 = BIP32Factory(ecc);
 
@@ -111,6 +113,14 @@ export class LocalKeyProvider implements KeyProvider {
 
   getProviderType(): string {
     return "local";
+  }
+
+  toJSON(): Record<string, unknown> {
+    return redactedView({ keyProvider: this.getProviderType() }, ["root"]);
+  }
+
+  [inspect.custom](): string {
+    return inspectRedacted("LocalKeyProvider", this.toJSON());
   }
 }
 
@@ -228,6 +238,14 @@ export class CloudKeyProvider implements KeyProvider {
   getProviderType(): string {
     return `cloud-${this.config.provider}`;
   }
+
+  toJSON(): Record<string, unknown> {
+    return redactedView({ keyProvider: this.getProviderType() }, ["cachedRoot"]);
+  }
+
+  [inspect.custom](): string {
+    return inspectRedacted("CloudKeyProvider", this.toJSON());
+  }
 }
 
 /**
@@ -263,6 +281,14 @@ export class MockKeyProvider implements KeyProvider {
 
   getProviderType(): string {
     return "mock";
+  }
+
+  toJSON(): Record<string, unknown> {
+    return redactedView({ keyProvider: this.getProviderType() }, ["root", "seed"]);
+  }
+
+  [inspect.custom](): string {
+    return inspectRedacted("MockKeyProvider", this.toJSON());
   }
 
   /**
