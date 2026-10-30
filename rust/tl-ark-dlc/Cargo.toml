@@ -1,0 +1,12 @@
+[package]
+name = "tl-ark-dlc"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.90"
+description = "EXPERIMENTAL: Ark/DLC oracle attestation, VTXO loan lifecycle and TradeLayer handshake logic ported from Ark-TradeLayer"
+license = "MIT"
+publish = false
+
+[dependencies]
+bitcoin = { version = "0.32", default-features = false, features = ["std"] }
+serde_json = "1"

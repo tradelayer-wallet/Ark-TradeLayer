@@ -1,0 +1,488 @@
+{
+ "generator": "rust/tl-ark-dlc/scripts/compare-legacy.mjs",
+ "pins": {
+  "vtxo-loan-system/src/crypto/tagged-hash.ts": "14ae39c706fe4b819fa31dba4bbc6e5a7e11ec84",
+  "vtxo-loan-system/src/attestation/attestation-engine.ts": "0421e240ca9bccf5e9d7181a2bb23587ec774f62",
+  "tl-vtxo-handshake-optimized/ark-tradelayer-handshake.js": "45d93f08df2fe12efd61343d7fa4afc2afff82a8"
+ },
+ "tagged_hash": [
+  {
+   "tag": "DLC/oracle/nonce/v0",
+   "data": "",
+   "out": "e0639a74daf3d133e22d63d67cea9221ef2cd9b00e2c829aab9b9827062ac029"
+  },
+  {
+   "tag": "DLC/oracle/nonce/v0",
+   "data": "00",
+   "out": "29b4c22b084664dd245c92b0d1ebfbaf5b68e9df2d7c9206d5c5f0eeb124a237"
+  },
+  {
+   "tag": "DLC/oracle/attestation/v0",
+   "data": "70616964",
+   "out": "dc9dad9e908bc66206881df70da028428fc63d096cad42853e91c21107d7b2d4"
+  },
+  {
+   "tag": "DLC/oracle/announcement/v0",
+   "data": "0102030405",
+   "out": "54712b7b6582031e411f469cde1f3bfb8314079c6f9c3daf0bfcc45e78791955"
+  },
+  {
+   "tag": "TestTag",
+   "data": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+   "out": "6ad9b4c58fe4e189f037b8af34b7be7084dbeb8717d056ccf86e836385f2c2c8"
+  }
+ ],
+ "hash_attestation": [
+  {
+   "outcome": "paid",
+   "out": "dc9dad9e908bc66206881df70da028428fc63d096cad42853e91c21107d7b2d4"
+  },
+  {
+   "outcome": "unpaid",
+   "out": "fc3ac316e65d804e7304be33c29d7c93cb4742c5edd75075891ee2e4fa0a651e"
+  },
+  {
+   "outcome": "hit",
+   "out": "8356ceda53f31eb8807f13faa9b11e149cfb2105f512d623bc55e7412c91036d"
+  },
+  {
+   "outcome": "miss",
+   "out": "7f68123262da425e41af5f4ac0451c2b4a0b38e981ad1c41e4343492f7f64905"
+  },
+  {
+   "outcome": "+",
+   "out": "782ad0a992181bbbfb72d9d9410f63ef2e2974095acefbf9d4fad7bc73772f7c"
+  },
+  {
+   "outcome": "-",
+   "out": "dbb3f214158fd73b937232856e1a781f5001508b4e5a6d5c517b3364bc8b0321"
+  },
+  {
+   "outcome": "0",
+   "out": "2012241bd361f299bb727af5f402c41af84d01268e571d45753bb14fd61391f3"
+  },
+  {
+   "outcome": "1",
+   "out": "00be2b1d8b6da97d5c26e826c2dc7647adfec2ff107d1e4d8ea8041ed8d29453"
+  },
+  {
+   "outcome": "",
+   "out": "7f35eb74117d3bc70c96b06bf8fe31d2f7ca2c39f41979c9327378f743761480"
+  },
+  {
+   "outcome": "triggered",
+   "out": "342918a42056a285af2351b8c89a205f8ae52fc49c8c7115aa11dbbcf675c498"
+  },
+  {
+   "outcome": "défaut",
+   "out": "bab69cda04804f9cea66ffeb1623e48fcfba62047710698fd40486b2ceeb7ca2"
+  }
+ ],
+ "nonce_tweak": [
+  {
+   "base": "1111111111111111111111111111111111111111111111111111111111111111",
+   "event_id": "evt-1",
+   "out": "be92aa356ac26af5a18fac6b408f66d014f320b4b97c0c488e3138e72cb57753"
+  },
+  {
+   "base": "1111111111111111111111111111111111111111111111111111111111111111",
+   "event_id": "evt-2",
+   "out": "d30dd41dfc3323319a7caf5c302422725b904af0508d1dce71077c2d65e51273"
+  },
+  {
+   "base": "1111111111111111111111111111111111111111111111111111111111111111",
+   "event_id": "loan/ä",
+   "out": "2f48bfa4f1c5fe40f669d2d0ea4c86276d00e00ab91d618487a7bd9b52eb4742"
+  }
+ ],
+ "announcement": [
+  {
+   "name": "enum",
+   "event_id": "evt-enum",
+   "descriptor_json": "{\"type\":\"enum\",\"outcomes\":[\"fulfilled\",\"defaulted\",\"expired\"]}",
+   "maturity": 1893456000,
+   "nonce_count": 1,
+   "nonce_points": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   ],
+   "data": "6576742d656e756d7b2274797065223a22656e756d222c226f7574636f6d6573223a5b2266756c66696c6c6564222c2264656661756c746564222c2265787069726564225d7d0000000070dbd880aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "digest": "af910b36b13a09b6a483db81c699a7be0d6f4b223231cf756ccb747cfa92811c"
+  },
+  {
+   "name": "binary",
+   "event_id": "evt-binary",
+   "descriptor_json": "{\"type\":\"binary\",\"outcomes\":[\"paid\",\"unpaid\"]}",
+   "maturity": 1893456000,
+   "nonce_count": 1,
+   "nonce_points": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   ],
+   "data": "6576742d62696e6172797b2274797065223a2262696e617279222c226f7574636f6d6573223a5b2270616964222c22756e70616964225d7d0000000070dbd880aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "digest": "335d6077376b8b3328e82c1898001cd0531907b468e36577e753d445692f5450"
+  },
+  {
+   "name": "numeric",
+   "event_id": "evt-numeric",
+   "descriptor_json": "{\"type\":\"numeric\",\"base\":2,\"numDigits\":8,\"unit\":\"USD\",\"precision\":0,\"signed\":true}",
+   "maturity": 1893456000,
+   "nonce_count": 9,
+   "nonce_points": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   ],
+   "data": "6576742d6e756d657269637b2274797065223a226e756d65726963222c2262617365223a322c226e756d446967697473223a382c22756e6974223a22555344222c22707265636973696f6e223a302c227369676e6564223a747275657d0000000070dbd880aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+   "digest": "a12b797725809276d3908db3aa7e62481e7eaa47ef98453a8c3da6e4754832c0"
+  }
+ ],
+ "numeric_decomposition": [
+  {
+   "value": 5,
+   "base": 2,
+   "num_digits": 8,
+   "signed": true,
+   "outcomes": [
+    "+",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1"
+   ]
+  },
+  {
+   "value": -5,
+   "base": 2,
+   "num_digits": 8,
+   "signed": true,
+   "outcomes": [
+    "-",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    "0",
+    "1"
+   ]
+  },
+  {
+   "value": 0,
+   "base": 2,
+   "num_digits": 4,
+   "signed": false,
+   "outcomes": [
+    "0",
+    "0",
+    "0",
+    "0"
+   ]
+  },
+  {
+   "value": 255,
+   "base": 2,
+   "num_digits": 8,
+   "signed": false,
+   "outcomes": [
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1",
+    "1"
+   ]
+  },
+  {
+   "value": 256,
+   "base": 2,
+   "num_digits": 8,
+   "signed": false,
+   "outcomes": {
+    "error": "Value 256 exceeds digit capacity"
+   }
+  },
+  {
+   "value": 1234,
+   "base": 10,
+   "num_digits": 6,
+   "signed": true,
+   "outcomes": [
+    "+",
+    "0",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4"
+   ]
+  },
+  {
+   "value": 10,
+   "base": 16,
+   "num_digits": 2,
+   "signed": false,
+   "outcomes": [
+    "0",
+    "a"
+   ]
+  }
+ ],
+ "numeric_defect_probes": [
+  {
+   "value": "1.5",
+   "outcomes": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "1",
+    ".",
+    "1"
+   ]
+  },
+  {
+   "value": "NaN",
+   "outcomes": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "N",
+    "a",
+    "N"
+   ]
+  }
+ ],
+ "template_id": [
+  {
+   "name": "sample",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-mainnet",
+    "internalKey": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "leafScripts": [
+     "20<user_pk>ac20<server_pk>ac",
+     "20<user_pk>ac02f003b2",
+     "20<server_pk>ac02d007b2"
+    ],
+    "leafVersions": [
+     192,
+     192,
+     192
+    ],
+    "leafRoles": [
+     "batch-settle",
+     "user-exit",
+     "asp-forfeit"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "Unilateral user exit after CSV timeout",
+     "batchSettle": "Cooperative spend by user and server",
+     "aspForfeit": "Server claims funds if user misbehaves"
+    },
+    "merkleRoot": "0000000000000000000000000000000000000000000000000000000000000000"
+   },
+   "canonical_timeouts": "{\"aspForfeitCsv\":2000,\"userExitCsv\":1008}",
+   "canonical_semantics": "{\"aspForfeit\":\"Server claims funds if user misbehaves\",\"batchSettle\":\"Cooperative spend by user and server\",\"userExit\":\"Unilateral user exit after CSV timeout\"}",
+   "id": "16ac09c7037bbb9b774de583ea6b2c14b0968f2a08f4294bf1081cffd60f15b8"
+  },
+  {
+   "name": "scripts_reversed_roles_unchanged",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-mainnet",
+    "internalKey": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "leafScripts": [
+     "20<server_pk>ac02d007b2",
+     "20<user_pk>ac02f003b2",
+     "20<user_pk>ac20<server_pk>ac"
+    ],
+    "leafVersions": [
+     192,
+     192,
+     192
+    ],
+    "leafRoles": [
+     "batch-settle",
+     "user-exit",
+     "asp-forfeit"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "Unilateral user exit after CSV timeout",
+     "batchSettle": "Cooperative spend by user and server",
+     "aspForfeit": "Server claims funds if user misbehaves"
+    },
+    "merkleRoot": "0000000000000000000000000000000000000000000000000000000000000000"
+   },
+   "canonical_timeouts": "{\"aspForfeitCsv\":2000,\"userExitCsv\":1008}",
+   "canonical_semantics": "{\"aspForfeit\":\"Server claims funds if user misbehaves\",\"batchSettle\":\"Cooperative spend by user and server\",\"userExit\":\"Unilateral user exit after CSV timeout\"}",
+   "id": "16ac09c7037bbb9b774de583ea6b2c14b0968f2a08f4294bf1081cffd60f15b8"
+  },
+  {
+   "name": "regtest_root_ab",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-regtest",
+    "internalKey": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "leafScripts": [
+     "20<user_pk>ac20<server_pk>ac",
+     "20<user_pk>ac02f003b2",
+     "20<server_pk>ac02d007b2"
+    ],
+    "leafVersions": [
+     192,
+     192,
+     192
+    ],
+    "leafRoles": [
+     "batch-settle",
+     "user-exit",
+     "asp-forfeit"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "Unilateral user exit after CSV timeout",
+     "batchSettle": "Cooperative spend by user and server",
+     "aspForfeit": "Server claims funds if user misbehaves"
+    },
+    "merkleRoot": "abababababababababababababababababababababababababababababababab"
+   },
+   "canonical_timeouts": "{\"aspForfeitCsv\":2000,\"userExitCsv\":1008}",
+   "canonical_semantics": "{\"aspForfeit\":\"Server claims funds if user misbehaves\",\"batchSettle\":\"Cooperative spend by user and server\",\"userExit\":\"Unilateral user exit after CSV timeout\"}",
+   "id": "2bdc560f25495573a3773b292a187ec7a2c67d6fdd8d20404041bcf64327aaa5"
+  }
+ ],
+ "canonical_json": [
+  {
+   "input": "{\"a\":1,\"b\":{\"z\":[3,{\"y\":1,\"x\":2}],\"a\":\"q\\\"\\\\\\n\"},\"c\":null}",
+   "out": "{\"a\":1,\"b\":{\"a\":\"q\\\"\\\\\\n\",\"z\":[3,{\"x\":2,\"y\":1}]},\"c\":null}"
+  },
+  {
+   "input": "[]",
+   "out": "[]"
+  },
+  {
+   "input": "\"x\"",
+   "out": "\"x\""
+  }
+ ],
+ "placeholder_taproot_key": {
+  "internal_key": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+  "merkle_root": "0000000000000000000000000000000000000000000000000000000000000000",
+  "out": "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+ },
+ "decode_segwit": [
+  {
+   "script": "5120cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+   "out": {
+    "version": 1,
+    "program": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+   }
+  },
+  {
+   "script": "5120cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdff",
+   "out": {
+    "version": 1,
+    "program": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+   }
+  },
+  {
+   "script": "00141111111111111111111111111111111111111111",
+   "out": {
+    "version": 0,
+    "program": "1111111111111111111111111111111111111111"
+   }
+  },
+  {
+   "script": "51",
+   "out": {
+    "error": "Script too short"
+   }
+  },
+  {
+   "script": "6a",
+   "out": {
+    "error": "Script too short"
+   }
+  },
+  {
+   "script": "5120cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+   "out": {
+    "error": "Program length mismatch"
+   }
+  },
+  {
+   "script": "5220cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+   "out": {
+    "version": 2,
+    "program": "cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+   }
+  },
+  {
+   "script": "0020eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+   "out": {
+    "version": 0,
+    "program": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+   }
+  }
+ ],
+ "legacy_reconstruct": {
+  "leafHash": "a9e6dab1a329e19502971ff206cc46218734b85028f94c6c5353fbddd2720a19",
+  "merkleRoot": "b2b8be65a7b3bf61bfa837da4149046e4c12c523f75d988b8c7580c5f5d78583",
+  "internalKey": "2222222222222222222222222222222222222222222222222222222222222222",
+  "taprootOutputKey": "2222222222222222222222222222222222222222222222222222222222222222",
+  "leaf": "201111111111111111111111111111111111111111111111111111111111111111ac",
+  "control_block": "c022222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333333333333333333333333"
+ },
+ "compact_size": [
+  {
+   "n": 0,
+   "out": "00"
+  },
+  {
+   "n": 1,
+   "out": "01"
+  },
+  {
+   "n": 252,
+   "out": "fc"
+  },
+  {
+   "n": 253,
+   "error": "TypeError"
+  },
+  {
+   "n": 300,
+   "error": "TypeError"
+  },
+  {
+   "n": 70000,
+   "error": "TypeError"
+  }
+ ]
+}
