@@ -389,10 +389,7 @@ impl Store for MemoryStore {
     }
 
     fn cas_loan_status(&mut self, loan_id: &str, from: LoanStatus, to: LoanStatus) -> Result<()> {
-        let rec = self
-            .loans
-            .get_mut(loan_id)
-            .ok_or(Error::NotFound("loan"))?;
+        let rec = self.loans.get_mut(loan_id).ok_or(Error::NotFound("loan"))?;
         if rec.status != from {
             return Err(Error::Rejected("loan status changed concurrently"));
         }

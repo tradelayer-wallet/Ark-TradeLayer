@@ -26,7 +26,7 @@ fn nib(c: u8) -> Result<u8> {
 /// truncates at the first bad character; this does not.)
 pub fn from_hex(s: &str) -> Result<Vec<u8>> {
     let b = s.as_bytes();
-    if b.len() % 2 != 0 {
+    if !b.len().is_multiple_of(2) {
         return Err(Error::Malformed("odd-length hex"));
     }
     let mut out = Vec::with_capacity(b.len() / 2);

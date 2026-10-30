@@ -126,7 +126,12 @@ fn reject_floats(v: &Value, depth: usize) -> Result<()> {
 
 fn leaf_triples(t: &ArkTemplate) -> Result<Vec<(Vec<u8>, u8, String)>> {
     let mut v = Vec::new();
-    for ((s, ver), role) in t.leaf_scripts.iter().zip(&t.leaf_versions).zip(&t.leaf_roles) {
+    for ((s, ver), role) in t
+        .leaf_scripts
+        .iter()
+        .zip(&t.leaf_versions)
+        .zip(&t.leaf_roles)
+    {
         v.push((from_hex(s)?, *ver, role.clone()));
     }
     v.sort();
@@ -276,7 +281,9 @@ impl TemplateRegistry {
         let pair = (id.clone(), asp_id.to_string());
         if let Some(existing) = self.output_key_index.get(&computed) {
             if *existing != pair {
-                return Err(Error::Duplicate("output key already bound to another template/asp"));
+                return Err(Error::Duplicate(
+                    "output key already bound to another template/asp",
+                ));
             }
         } else if self.templates.len() >= MAX_TEMPLATES && !self.templates.contains_key(&id) {
             return Err(Error::Capacity("templates"));
@@ -306,7 +313,11 @@ impl TemplateRegistry {
 
     /// Legacy `isArkCommitmentUtxo`: scriptPubKey must be a v1 32-byte program bound to an
     /// allowlisted `(template, asp)`.
-    pub fn recognize_commitment(&self, script_pubkey: &[u8], value_sats: u64) -> Option<Commitment> {
+    pub fn recognize_commitment(
+        &self,
+        script_pubkey: &[u8],
+        value_sats: u64,
+    ) -> Option<Commitment> {
         let (version, program) = decode_witness_program(script_pubkey).ok()?;
         if version != 1 || program.len() != 32 {
             return None;
@@ -387,7 +398,11 @@ fn check_tx_bounds(tx: &TxView) -> Result<()> {
     if tx.inputs.len() > MAX_TX_IO || tx.outputs.len() > MAX_TX_IO {
         return Err(Error::TooLarge("transaction"));
     }
-    if tx.inputs.iter().any(|i| i.witness.len() > MAX_WITNESS_ITEMS) {
+    if tx
+        .inputs
+        .iter()
+        .any(|i| i.witness.len() > MAX_WITNESS_ITEMS)
+    {
         return Err(Error::TooLarge("witness"));
     }
     Ok(())
@@ -652,7 +667,9 @@ impl Bridge {
             .ok_or(Error::NotFound("spending transaction"))?;
         check_tx_bounds(&spend)?;
         if spend.confirmations < self.min_confirmations {
-            return Err(Error::Rejected("exit transaction not sufficiently confirmed"));
+            return Err(Error::Rejected(
+                "exit transaction not sufficiently confirmed",
+            ));
         }
         let input = spend
             .inputs
@@ -691,17 +708,20 @@ impl Bridge {
             .get(&commitment.template_id)
             .ok_or(Error::NotFound("template"))?;
 
-        let cb = ControlBlock::decode(control)
-            .map_err(|_| Error::Malformed("control block"))?;
+        let cb = ControlBlock::decode(control).map_err(|_| Error::Malformed("control block"))?;
         let secp = Secp256k1::verification_only();
         let output_key = XOnlyPublicKey::from_slice(&commitment.taproot_output_key)
             .map_err(|_| Error::Malformed("output key"))?;
         let script = ScriptBuf::from_bytes(leaf.clone());
         if !cb.verify_taproot_commitment(&secp, output_key, &script) {
-            return Err(Error::Rejected("leaf and control block do not commit to the deposit key"));
+            return Err(Error::Rejected(
+                "leaf and control block do not commit to the deposit key",
+            ));
         }
         if cb.internal_key.serialize() != hex32(&template.internal_key)? {
-            return Err(Error::Rejected("control block internal key differs from template"));
+            return Err(Error::Rejected(
+                "control block internal key differs from template",
+            ));
         }
 
         let idx = template

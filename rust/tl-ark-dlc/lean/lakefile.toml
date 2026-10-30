@@ -1,0 +1,5 @@
+name = "tl_ark_dlc"
+defaultTargets = ["TlArkDlc"]
+
+[[lean_lib]]
+name = "TlArkDlc"

@@ -33,8 +33,8 @@ impl SyntheticKeyProvider {
         let mut input = b"TL-ARK-DLC-SYNTHETIC".to_vec();
         input.extend_from_slice(label.as_bytes());
         let seed = sha256_bytes(&input);
-        let root = Xpriv::new_master(Network::Regtest, &seed)
-            .map_err(|_| Error::Crypto("master key"))?;
+        let root =
+            Xpriv::new_master(Network::Regtest, &seed).map_err(|_| Error::Crypto("master key"))?;
         Ok(SyntheticKeyProvider { root })
     }
 }

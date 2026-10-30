@@ -199,8 +199,8 @@ impl Descriptor {
                     outcomes
                 };
                 for d in digits {
-                    let ok = d.len() == 1
-                        && DIGITS[..usize::from(n.base)].contains(&d.as_bytes()[0]);
+                    let ok =
+                        d.len() == 1 && DIGITS[..usize::from(n.base)].contains(&d.as_bytes()[0]);
                     if !ok {
                         return Err(Error::Rejected("bad digit outcome"));
                     }
@@ -373,7 +373,9 @@ impl VerifiedOutcome {
 pub fn verify_attestation(ann: &Announcement, att: &Attestation) -> Result<VerifiedOutcome> {
     ann.verify()?;
     if ann.oracle_pubkey != att.oracle_pubkey || ann.event_id != att.event_id {
-        return Err(Error::Rejected("attestation is for a different event or oracle"));
+        return Err(Error::Rejected(
+            "attestation is for a different event or oracle",
+        ));
     }
     ann.descriptor.check_outcomes(&att.outcomes)?;
     if att.signatures.len() != att.outcomes.len() || att.signatures.len() != ann.nonce_points.len()
@@ -390,9 +392,16 @@ pub fn verify_attestation(ann: &Announcement, att: &Attestation) -> Result<Verif
         if !r_binding_ok(r, sig_bytes) {
             return Err(Error::RBindingMismatch { index });
         }
-        let digest = attestation_digest(&ann.oracle_pubkey, &ann.event_id, &ann_digest, index, r, outcome)?;
-        let sig = schnorr::Signature::from_slice(sig_bytes)
-            .map_err(|_| Error::Malformed("signature"))?;
+        let digest = attestation_digest(
+            &ann.oracle_pubkey,
+            &ann.event_id,
+            &ann_digest,
+            index,
+            r,
+            outcome,
+        )?;
+        let sig =
+            schnorr::Signature::from_slice(sig_bytes).map_err(|_| Error::Malformed("signature"))?;
         secp.verify_schnorr(&sig, &Message::from_digest(digest), &pk)
             .map_err(|_| Error::SignatureInvalid)?;
     }
@@ -476,7 +485,9 @@ impl<S: Store> Oracle<S> {
         c.extend_from_slice(digest);
         let e = Scalar::from_be_bytes(tagged_hash("BIP0340/challenge", &c))
             .map_err(crypto("challenge out of range"))?;
-        let ed = d.mul_tweak(&e).map_err(crypto("challenge multiplication"))?;
+        let ed = d
+            .mul_tweak(&e)
+            .map_err(crypto("challenge multiplication"))?;
         let s = k
             .add_tweak(&Scalar::from(ed))
             .map_err(crypto("response addition"))?;
@@ -532,7 +543,12 @@ impl<S: Store> Oracle<S> {
     /// Order of operations: validate everything, **persist the nonce uses**, sign, self-verify,
     /// persist the attestation. A failure after the persist step leaves the nonces burned; there is
     /// no retry that could sign a second message with the same nonce.
-    pub fn attest(&mut self, event_id: &str, outcomes: Vec<String>, now: u64) -> Result<Attestation> {
+    pub fn attest(
+        &mut self,
+        event_id: &str,
+        outcomes: Vec<String>,
+        now: u64,
+    ) -> Result<Attestation> {
         let rec = self
             .store
             .get_announcement(event_id)?
@@ -553,8 +569,7 @@ impl<S: Store> Oracle<S> {
         for (i, o) in outcomes.iter().enumerate() {
             let index = u32::try_from(i).map_err(|_| Error::Overflow)?;
             let r = ann.nonce_points[i];
-            let digest =
-                attestation_digest(&self.pk, event_id, &ann_digest, index, &r, o)?;
+            let digest = attestation_digest(&self.pk, event_id, &ann_digest, index, &r, o)?;
             uses.push(NonceUse { index, r, digest });
         }
         // persist-before-sign
@@ -606,7 +621,12 @@ impl<S: Store> Oracle<S> {
     }
 
     /// Attest a binary event (`true` = first label).
-    pub fn attest_binary(&mut self, event_id: &str, outcome: bool, now: u64) -> Result<Attestation> {
+    pub fn attest_binary(
+        &mut self,
+        event_id: &str,
+        outcome: bool,
+        now: u64,
+    ) -> Result<Attestation> {
         let rec = self
             .store
             .get_announcement(event_id)?

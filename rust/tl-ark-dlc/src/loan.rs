@@ -115,7 +115,9 @@ pub fn split_repay_full(collateral: u64) -> Split {
 /// `borrower = collateral - lender` (floor divisions, as in the contract).
 pub fn split_repay_partial(collateral: u64, principal: u64, repaid: u64) -> Result<Split> {
     if principal == 0 || repaid == 0 || repaid >= principal {
-        return Err(Error::Rejected("partial repayment must be in (0, principal)"));
+        return Err(Error::Rejected(
+            "partial repayment must be in (0, principal)",
+        ));
     }
     let ratio = (u128::from(repaid) * u128::from(RATIO_SCALE)) / u128::from(principal);
     // ratio < RATIO_SCALE because repaid < principal

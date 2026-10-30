@@ -57,11 +57,19 @@ fn enum_roundtrip_and_independent_library_verification() {
     secp.verify_schnorr(&sig, &Message::from_digest(digest), &pk)
         .unwrap();
 
-    let rec = o.store().get_attestation(&attestation_id("evt-1")).unwrap().unwrap();
+    let rec = o
+        .store()
+        .get_attestation(&attestation_id("evt-1"))
+        .unwrap()
+        .unwrap();
     assert!(rec.verified);
     assert_eq!(rec.signatures, att.signatures);
     assert_eq!(
-        o.store().get_announcement("evt-1").unwrap().unwrap().attestation_id,
+        o.store()
+            .get_announcement("evt-1")
+            .unwrap()
+            .unwrap()
+            .attestation_id,
         Some(attestation_id("evt-1"))
     );
 }
@@ -97,10 +105,15 @@ fn refuses_before_maturity_and_bad_outcomes() {
     assert_eq!(o.attest_enum("e", 0, MATURITY - 1), Err(Error::NotMatured));
     assert!(o.attest("e", vec!["nope".into()], MATURITY).is_err());
     assert!(o.attest("e", vec![], MATURITY).is_err());
-    assert!(o.attest("e", vec!["fulfilled".into(), "expired".into()], MATURITY).is_err());
+    assert!(o
+        .attest("e", vec!["fulfilled".into(), "expired".into()], MATURITY)
+        .is_err());
     assert!(o.attest_enum("e", 9, MATURITY).is_err());
     // none of the refusals consumed the nonce
-    assert_eq!(o.store().nonce("e", 0).unwrap().unwrap().state, NonceState::Fresh);
+    assert_eq!(
+        o.store().nonce("e", 0).unwrap().unwrap().state,
+        NonceState::Fresh
+    );
     o.attest_enum("e", 0, MATURITY).unwrap();
 
     o.announce("u", numeric_desc(false), MATURITY).unwrap();
@@ -162,13 +175,22 @@ fn persist_before_sign() {
 
     // 1. persistence of the nonce use fails: nothing is signed, nonce stays fresh, retry works
     o.store_mut().fail_begin_use = true;
-    assert!(matches!(o.attest_enum("e", 0, MATURITY), Err(Error::Storage(_))));
-    assert_eq!(o.store().nonce("e", 0).unwrap().unwrap().state, NonceState::Fresh);
+    assert!(matches!(
+        o.attest_enum("e", 0, MATURITY),
+        Err(Error::Storage(_))
+    ));
+    assert_eq!(
+        o.store().nonce("e", 0).unwrap().unwrap().state,
+        NonceState::Fresh
+    );
     o.store_mut().fail_begin_use = false;
 
     // 2. the nonce use persisted but recording the attestation fails: nonce is burned for good
     o.store_mut().fail_record_attestation = true;
-    assert!(matches!(o.attest_enum("e", 0, MATURITY), Err(Error::Storage(_))));
+    assert!(matches!(
+        o.attest_enum("e", 0, MATURITY),
+        Err(Error::Storage(_))
+    ));
     assert!(matches!(
         o.store().nonce("e", 0).unwrap().unwrap().state,
         NonceState::Used { .. }
@@ -176,7 +198,10 @@ fn persist_before_sign() {
     o.store_mut().fail_record_attestation = false;
     for i in 0..3 {
         assert!(
-            matches!(o.attest_enum("e", i, MATURITY), Err(Error::NonceReused { .. })),
+            matches!(
+                o.attest_enum("e", i, MATURITY),
+                Err(Error::NonceReused { .. })
+            ),
             "retry {i} must be refused"
         );
     }
@@ -189,7 +214,10 @@ fn single_writer_fencing() {
     // a second process takes over the store
     let _newer = o.store_mut().acquire_writer("process-2").unwrap();
     assert_eq!(o.store().writer_owner(), Some("process-2"));
-    assert_eq!(o.announce("b", enum_desc(), MATURITY), Err(Error::StaleWriter));
+    assert_eq!(
+        o.announce("b", enum_desc(), MATURITY),
+        Err(Error::StaleWriter)
+    );
     assert_eq!(o.attest_enum("a", 0, MATURITY), Err(Error::StaleWriter));
 }
 
@@ -241,10 +269,22 @@ fn messages_are_event_bound_unlike_legacy() {
     let d_b = attestation_digest(&pk, "event-B", &ad, 0, &r, "paid").unwrap();
     assert_ne!(d_a, d_b);
     // index, R, announcement digest and oracle all matter
-    assert_ne!(d_a, attestation_digest(&pk, "event-A", &ad, 1, &r, "paid").unwrap());
-    assert_ne!(d_a, attestation_digest(&pk, "event-A", &ad, 0, &[3; 32], "paid").unwrap());
-    assert_ne!(d_a, attestation_digest(&pk, "event-A", &[4; 32], 0, &r, "paid").unwrap());
-    assert_ne!(d_a, attestation_digest(&[8; 32], "event-A", &ad, 0, &r, "paid").unwrap());
+    assert_ne!(
+        d_a,
+        attestation_digest(&pk, "event-A", &ad, 1, &r, "paid").unwrap()
+    );
+    assert_ne!(
+        d_a,
+        attestation_digest(&pk, "event-A", &ad, 0, &[3; 32], "paid").unwrap()
+    );
+    assert_ne!(
+        d_a,
+        attestation_digest(&pk, "event-A", &[4; 32], 0, &r, "paid").unwrap()
+    );
+    assert_ne!(
+        d_a,
+        attestation_digest(&[8; 32], "event-A", &ad, 0, &r, "paid").unwrap()
+    );
     // delimiter ambiguity that the legacy concatenation had: ("ab","c") vs ("a","bc")
     assert_ne!(
         attestation_digest(&pk, "ab", &ad, 0, &r, "c").unwrap(),
@@ -330,7 +370,9 @@ fn nonces_are_deterministic_per_event_and_distinct_across_events() {
     for r in &a1.nonce_points {
         assert!(seen.insert(*r));
     }
-    let b = o1.announce("different", numeric_desc(true), MATURITY).unwrap();
+    let b = o1
+        .announce("different", numeric_desc(true), MATURITY)
+        .unwrap();
     for r in &b.nonce_points {
         assert!(!seen.contains(r));
     }

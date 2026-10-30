@@ -1,0 +1,229 @@
+{
+ "attestation_digest": [
+  {
+   "pk": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "event-A",
+   "announcement_digest": "0101010101010101010101010101010101010101010101010101010101010101",
+   "index": 0,
+   "r": "0202020202020202020202020202020202020202020202020202020202020202",
+   "outcome": "paid",
+   "digest": "6c2afec8aa7a18b547dee44da178b31ed203701999ad8b8a2d41480490224823"
+  },
+  {
+   "pk": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "event-B",
+   "announcement_digest": "0101010101010101010101010101010101010101010101010101010101010101",
+   "index": 0,
+   "r": "0202020202020202020202020202020202020202020202020202020202020202",
+   "outcome": "paid",
+   "digest": "f04ed684fbd6fea0bb5f221edd9b99dc000662b5c0b64eb516518673215976c4"
+  },
+  {
+   "pk": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "event-A",
+   "announcement_digest": "0101010101010101010101010101010101010101010101010101010101010101",
+   "index": 1,
+   "r": "0202020202020202020202020202020202020202020202020202020202020202",
+   "outcome": "paid",
+   "digest": "80a08be9b786c8976d42f9a397d24fcd229c9fe3153bf937bf4709a9181652a9"
+  },
+  {
+   "pk": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "ab",
+   "announcement_digest": "0101010101010101010101010101010101010101010101010101010101010101",
+   "index": 0,
+   "r": "0202020202020202020202020202020202020202020202020202020202020202",
+   "outcome": "c",
+   "digest": "853a1e89dc1f76743365f93d10b31e7b8ee6dc10f3788a88c150523f38494f81"
+  },
+  {
+   "pk": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "a",
+   "announcement_digest": "0101010101010101010101010101010101010101010101010101010101010101",
+   "index": 0,
+   "r": "0202020202020202020202020202020202020202020202020202020202020202",
+   "outcome": "bc",
+   "digest": "22ccdbcc5d609a48577759690517f32c1a8c44b2ad9ce0314867ea7e172c9821"
+  },
+  {
+   "pk": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "evt-é",
+   "announcement_digest": "0101010101010101010101010101010101010101010101010101010101010101",
+   "index": 7,
+   "r": "0303030303030303030303030303030303030303030303030303030303030303",
+   "outcome": "défaut",
+   "digest": "4d5eed8b7c0284b363cec88ea14919af353be8d96b134618e1230dd59987dda0"
+  }
+ ],
+ "announcement": [
+  {
+   "name": "enum",
+   "oracle": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "evt-enum",
+   "maturity": 1893456000,
+   "nonces": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   ],
+   "descriptor_encoding": "01000000030000000966756c66696c6c65640000000964656661756c7465640000000765787069726564",
+   "digest": "8d1e1ae7379757b3e982a4cda146e288a1ebe98a857636ccf59ded72adb5f212"
+  },
+  {
+   "name": "binary",
+   "oracle": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "evt-binary",
+   "maturity": 1893456000,
+   "nonces": [
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+   ],
+   "descriptor_encoding": "02000000047061696400000006756e70616964",
+   "digest": "a506b56518e80d22d04ab6775ba44c22ad27ecf8cd03d0dcf1aa4f3796f0798f"
+  },
+  {
+   "name": "numeric",
+   "oracle": "0909090909090909090909090909090909090909090909090909090909090909",
+   "event_id": "evt-numeric",
+   "maturity": 1893456000,
+   "nonces": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+   ],
+   "descriptor_encoding": "030200000002000000035553440001",
+   "digest": "6aa159c808e7065c397fb49be18832903c67e6f44f104f0bdc37eac7f3630aeb"
+  }
+ ],
+ "template_v2": [
+  {
+   "name": "base",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-regtest",
+    "internal": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "root": "abababababababababababababababababababababababababababababababab",
+    "scripts": [
+     "2011ac",
+     "2022ac",
+     "2033ac"
+    ],
+    "versions": [
+     192,
+     192,
+     192
+    ],
+    "roles": [
+     "batch-settle",
+     "user-exit",
+     "asp-forfeit"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "u",
+     "aspForfeit": "a"
+    }
+   },
+   "id": "3b6c32ee82f5a6033db4b4bd99de9495791959c72e38cda3fcd4619cf93bceb6"
+  },
+  {
+   "name": "reordered_with_roles",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-regtest",
+    "internal": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "root": "abababababababababababababababababababababababababababababababab",
+    "scripts": [
+     "2033ac",
+     "2022ac",
+     "2011ac"
+    ],
+    "versions": [
+     192,
+     192,
+     192
+    ],
+    "roles": [
+     "asp-forfeit",
+     "user-exit",
+     "batch-settle"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "u",
+     "aspForfeit": "a"
+    }
+   },
+   "id": "3b6c32ee82f5a6033db4b4bd99de9495791959c72e38cda3fcd4619cf93bceb6"
+  },
+  {
+   "name": "scripts_swapped_roles_fixed",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-regtest",
+    "internal": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "root": "abababababababababababababababababababababababababababababababab",
+    "scripts": [
+     "2022ac",
+     "2011ac",
+     "2033ac"
+    ],
+    "versions": [
+     192,
+     192,
+     192
+    ],
+    "roles": [
+     "batch-settle",
+     "user-exit",
+     "asp-forfeit"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "u",
+     "aspForfeit": "a"
+    }
+   },
+   "id": "af26eab31010459ec1a3375b2e8ff33f052103c2857554561ff47d09722f86f9"
+  },
+  {
+   "name": "mainnet",
+   "template": {
+    "version": 1,
+    "network": "bitcoin-mainnet",
+    "internal": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798",
+    "root": "abababababababababababababababababababababababababababababababab",
+    "scripts": [
+     "2011ac",
+     "2022ac",
+     "2033ac"
+    ],
+    "versions": [
+     192,
+     192,
+     192
+    ],
+    "roles": [
+     "batch-settle",
+     "user-exit",
+     "asp-forfeit"
+    ],
+    "timeouts": {
+     "userExitCsv": 1008,
+     "aspForfeitCsv": 2000
+    },
+    "semantics": {
+     "userExit": "u",
+     "aspForfeit": "a"
+    }
+   },
+   "id": "89b28d5331490be0598e89a01f356e630d4d452100c95cf535a9b7624fc483f3"
+  }
+ ]
+}

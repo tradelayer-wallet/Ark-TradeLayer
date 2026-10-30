@@ -62,10 +62,16 @@ fn template(t: &Tree) -> ArkTemplate {
         merkle_root: to_hex(&t.info.merkle_root().unwrap().to_byte_array()),
         leaf_scripts: t.scripts.iter().map(|s| to_hex(s)).collect(),
         leaf_versions: vec![0xc0; 3],
-        leaf_roles: vec!["batch-settle".into(), "user-exit".into(), "asp-forfeit".into()],
+        leaf_roles: vec![
+            "batch-settle".into(),
+            "user-exit".into(),
+            "asp-forfeit".into(),
+        ],
         timeouts: json!({"userExitCsv": 1008, "aspForfeitCsv": 2000}),
         semantics: json!({"userExit": "unilateral exit", "aspForfeit": "server claims"}),
-        taproot_output_key: Some(to_hex(&t.info.output_key().to_x_only_public_key().serialize())),
+        taproot_output_key: Some(to_hex(
+            &t.info.output_key().to_x_only_public_key().serialize(),
+        )),
         template_id: None,
     }
 }
@@ -82,7 +88,10 @@ fn spk(t: &Tree) -> Vec<u8> {
 
 fn control_block(t: &Tree, idx: usize) -> Vec<u8> {
     t.info
-        .control_block(&(ScriptBuf::from_bytes(t.scripts[idx].clone()), LeafVersion::TapScript))
+        .control_block(&(
+            ScriptBuf::from_bytes(t.scripts[idx].clone()),
+            LeafVersion::TapScript,
+        ))
         .unwrap()
         .serialize()
 }
@@ -157,7 +166,11 @@ fn redeem_req() -> RedeemRequest {
 }
 
 fn user_exit_witness(w: &World) -> Vec<Vec<u8>> {
-    vec![vec![0xaa; 64], w.tree.scripts[1].clone(), control_block(&w.tree, 1)]
+    vec![
+        vec![0xaa; 64],
+        w.tree.scripts[1].clone(),
+        control_block(&w.tree, 1),
+    ]
 }
 
 #[test]
@@ -264,7 +277,11 @@ fn deposit_recognition_is_strict() {
     assert!(w.bridge.registry.recognize_commitment(&ok, 5).is_some());
     let mut trailing = ok.clone();
     trailing.push(0xff);
-    assert!(w.bridge.registry.recognize_commitment(&trailing, 5).is_none());
+    assert!(w
+        .bridge
+        .registry
+        .recognize_commitment(&trailing, 5)
+        .is_none());
     let mut v0 = vec![0x00, 0x20];
     v0.extend_from_slice(&key);
     assert!(w.bridge.registry.recognize_commitment(&v0, 5).is_none());
@@ -273,17 +290,28 @@ fn deposit_recognition_is_strict() {
     assert!(w.bridge.registry.recognize_commitment(&v2, 5).is_none());
     let mut unknown = ok.clone();
     unknown[5] ^= 1;
-    assert!(w.bridge.registry.recognize_commitment(&unknown, 5).is_none());
+    assert!(w
+        .bridge
+        .registry
+        .recognize_commitment(&unknown, 5)
+        .is_none());
     assert!(w.bridge.registry.recognize_commitment(&[], 5).is_none());
     assert!(w.bridge.registry.recognize_commitment(&[0x51], 5).is_none());
-    assert!(w.bridge.registry.recognize_commitment(&[0x6a; 40], 5).is_none());
+    assert!(w
+        .bridge
+        .registry
+        .recognize_commitment(&[0x6a; 40], 5)
+        .is_none());
 }
 
 #[test]
 fn mint_happy_path_vout_zero_and_double_mint() {
     let mut w = world();
     let m = mint_req(&w);
-    let out = w.bridge.handle(&w.chain, Message::WrapMint(m.clone())).unwrap();
+    let out = w
+        .bridge
+        .handle(&w.chain, Message::WrapMint(m.clone()))
+        .unwrap();
     match out {
         Outcome::Minted(c) => {
             assert_eq!(c.amount_sats, 100_000);
@@ -361,7 +389,10 @@ fn redeem_through_user_exit_leaf() {
     w.bridge
         .handle(&w.chain, Message::WrapMint(mint_req(&w)))
         .unwrap();
-    let out = w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).unwrap();
+    let out = w
+        .bridge
+        .handle(&w.chain, Message::Redeem(redeem_req()))
+        .unwrap();
     assert_eq!(
         out,
         Outcome::Redeemed {
@@ -392,7 +423,9 @@ fn redeem_accepts_a_taproot_annex() {
     let mut wit = user_exit_witness(&w);
     wit.push(vec![0x50, 0x01, 0x02]);
     add_exit(&mut w.chain, wit, 100_000, 6);
-    w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).unwrap();
+    w.bridge
+        .handle(&w.chain, Message::Redeem(redeem_req()))
+        .unwrap();
 }
 
 #[test]
@@ -411,11 +444,18 @@ fn redeem_rejections() {
     );
     // empty witness
     add_exit(&mut w.chain, vec![], 100_000, 6);
-    assert!(w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).is_err());
+    assert!(w
+        .bridge
+        .handle(&w.chain, Message::Redeem(redeem_req()))
+        .is_err());
     // the cooperative batch-settle leaf is a valid commitment but not a user exit
     add_exit(
         &mut w.chain,
-        vec![vec![0xaa; 64], w.tree.scripts[0].clone(), control_block(&w.tree, 0)],
+        vec![
+            vec![0xaa; 64],
+            w.tree.scripts[0].clone(),
+            control_block(&w.tree, 0),
+        ],
         100_000,
         6,
     );
@@ -427,11 +467,18 @@ fn redeem_rejections() {
     let evil = tree("evil-internal", "user");
     add_exit(
         &mut w.chain,
-        vec![vec![0xaa; 64], evil.scripts[1].clone(), control_block(&evil, 1)],
+        vec![
+            vec![0xaa; 64],
+            evil.scripts[1].clone(),
+            control_block(&evil, 1),
+        ],
         100_000,
         6,
     );
-    assert!(w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).is_err());
+    assert!(w
+        .bridge
+        .handle(&w.chain, Message::Redeem(redeem_req()))
+        .is_err());
     // legacy-style forgery: control block "internal key" set to the registered output key
     let key = w.tree.info.output_key().to_x_only_public_key().serialize();
     let mut forged = vec![0xc0];
@@ -442,17 +489,35 @@ fn redeem_rejections() {
         100_000,
         6,
     );
-    assert!(w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).is_err());
+    assert!(w
+        .bridge
+        .handle(&w.chain, Message::Redeem(redeem_req()))
+        .is_err());
     // garbage control blocks
-    for cb in [vec![], vec![0xc0; 5], vec![0xc0; 34], vec![0xc0; 33 + 32 * 129]] {
-        add_exit(&mut w.chain, vec![vec![1], w.tree.scripts[1].clone(), cb], 100_000, 6);
-        assert!(w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).is_err());
+    for cb in [
+        vec![],
+        vec![0xc0; 5],
+        vec![0xc0; 34],
+        vec![0xc0; 33 + 32 * 129],
+    ] {
+        add_exit(
+            &mut w.chain,
+            vec![vec![1], w.tree.scripts[1].clone(), cb],
+            100_000,
+            6,
+        );
+        assert!(w
+            .bridge
+            .handle(&w.chain, Message::Redeem(redeem_req()))
+            .is_err());
     }
     // right witness, but the exit transaction is not confirmed (legacy accepted it)
     add_exit(&mut w.chain, good.clone(), 100_000, 0);
     assert_eq!(
         w.bridge.handle(&w.chain, Message::Redeem(redeem_req())),
-        Err(Error::Rejected("exit transaction not sufficiently confirmed"))
+        Err(Error::Rejected(
+            "exit transaction not sufficiently confirmed"
+        ))
     );
     // too little value released (more than the 10_000 sat tolerance below the burn)
     add_exit(&mut w.chain, good.clone(), 89_999, 6);
@@ -471,7 +536,9 @@ fn redeem_rejections() {
     assert!(w.bridge.handle(&w.chain, Message::Redeem(r)).is_err());
     // boundary: exactly at the tolerance is accepted
     add_exit(&mut w.chain, good, 90_000, 6);
-    w.bridge.handle(&w.chain, Message::Redeem(redeem_req())).unwrap();
+    w.bridge
+        .handle(&w.chain, Message::Redeem(redeem_req()))
+        .unwrap();
 }
 
 #[test]
@@ -482,10 +549,15 @@ fn released_value_sum_is_checked() {
         .unwrap();
     let wit = user_exit_witness(&w);
     add_exit(&mut w.chain, wit, u64::MAX, 6);
-    w.chain.txs.get_mut(&txid(2)).unwrap().outputs.push(TxOutView {
-        value_sats: 1,
-        script_pubkey: vec![],
-    });
+    w.chain
+        .txs
+        .get_mut(&txid(2))
+        .unwrap()
+        .outputs
+        .push(TxOutView {
+            value_sats: 1,
+            script_pubkey: vec![],
+        });
     assert_eq!(
         w.bridge.handle(&w.chain, Message::Redeem(redeem_req())),
         Err(Error::Overflow)

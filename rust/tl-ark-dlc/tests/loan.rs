@@ -71,7 +71,11 @@ fn funded(f: &Fixture) -> Loan {
 
 fn proof(f: &mut Fixture, event: &str, ann_is_repay: bool, outcome: bool) -> VerifiedOutcome {
     let att = f.oracle.attest_binary(event, outcome, T).unwrap();
-    let ann = if ann_is_repay { &f.repay_ann } else { &f.price_ann };
+    let ann = if ann_is_repay {
+        &f.repay_ann
+    } else {
+        &f.price_ann
+    };
     verify_attestation(ann, &att).unwrap()
 }
 
@@ -91,9 +95,18 @@ fn borrow_fund_repay_full() {
     assert_eq!(l.status(), LoanStatus::Repaid);
     assert_eq!(l.settlement(), Some(s));
     // terminal: nothing more is possible
-    assert!(matches!(l.claim_default(T + 10_000_000), Err(Error::IllegalTransition { .. })));
-    assert!(matches!(l.emergency_exit(5000), Err(Error::IllegalTransition { .. })));
-    assert!(matches!(l.repay_full(&p), Err(Error::IllegalTransition { .. })));
+    assert!(matches!(
+        l.claim_default(T + 10_000_000),
+        Err(Error::IllegalTransition { .. })
+    ));
+    assert!(matches!(
+        l.emergency_exit(5000),
+        Err(Error::IllegalTransition { .. })
+    ));
+    assert!(matches!(
+        l.repay_full(&p),
+        Err(Error::IllegalTransition { .. })
+    ));
 }
 
 #[test]
@@ -158,8 +171,14 @@ fn illegal_transitions_and_funding() {
     let f = fixture("l5");
     let mut l = Loan::new(terms(f.oracle.public_key()), 10_000).unwrap();
     assert_eq!(l.status(), LoanStatus::Pending);
-    assert!(matches!(l.claim_default(T * 2), Err(Error::IllegalTransition { .. })));
-    assert!(matches!(l.emergency_exit(9999), Err(Error::IllegalTransition { .. })));
+    assert!(matches!(
+        l.claim_default(T * 2),
+        Err(Error::IllegalTransition { .. })
+    ));
+    assert!(matches!(
+        l.emergency_exit(9999),
+        Err(Error::IllegalTransition { .. })
+    ));
     assert!(l.open_dispute().is_err());
     l.fund(Funding {
         txid: [1; 32],
@@ -277,7 +296,10 @@ fn store_cas_follows_the_edges() {
         .is_err());
     st.cas_loan_status("loan-1", LoanStatus::Active, LoanStatus::Liquidated)
         .unwrap();
-    assert_eq!(st.get_loan("loan-1").unwrap().unwrap().status, LoanStatus::Liquidated);
+    assert_eq!(
+        st.get_loan("loan-1").unwrap().unwrap().status,
+        LoanStatus::Liquidated
+    );
     assert!(st
         .cas_loan_status("missing", LoanStatus::Pending, LoanStatus::Active)
         .is_err());

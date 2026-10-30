@@ -280,7 +280,9 @@ fn parse_server_key(s: &str) -> Option<[u8; 32]> {
         Some(b)
     } else if s.len() == 66 {
         let b = from_hex(s).ok()?;
-        PublicKey::from_slice(&b).ok().map(|k| k.x_only_public_key().0.serialize())
+        PublicKey::from_slice(&b)
+            .ok()
+            .map(|k| k.x_only_public_key().0.serialize())
     } else {
         None
     }
@@ -333,7 +335,10 @@ impl Config {
         };
         let mnemonic = p.nonempty("MNEMONIC").map(|s| Secret(s.to_string()));
         let project_id = p.nonempty("CLOUD_PROJECT_ID").map(str::to_string);
-        let secret_id = p.nonempty("CLOUD_SECRET_ID").unwrap_or("oracle-mnemonic").to_string();
+        let secret_id = p
+            .nonempty("CLOUD_SECRET_ID")
+            .unwrap_or("oracle-mnemonic")
+            .to_string();
         match provider {
             KeyProviderKind::Mock => {
                 if !dev || network == NetworkType::Mainnet {
@@ -345,7 +350,9 @@ impl Config {
                     p.err("local key provider requires MNEMONIC".into());
                 }
                 if mode == OracleMode::Production || network == NetworkType::Mainnet {
-                    p.err("local mnemonic provider is not allowed in production or on mainnet".into());
+                    p.err(
+                        "local mnemonic provider is not allowed in production or on mainnet".into(),
+                    );
                 }
             }
             KeyProviderKind::Gcp | KeyProviderKind::Aws => {
@@ -360,7 +367,10 @@ impl Config {
         if !(uri.starts_with("mongodb://") || uri.starts_with("mongodb+srv://")) {
             p.err("MONGODB_URI must start with mongodb:// or mongodb+srv://".into());
         }
-        let db_name = p.nonempty("MONGODB_DATABASE").unwrap_or("vtxo-loans").to_string();
+        let db_name = p
+            .nonempty("MONGODB_DATABASE")
+            .unwrap_or("vtxo-loans")
+            .to_string();
         let pool_size = p.num("MONGODB_POOL_SIZE", 10, 1, 500) as u32;
 
         // redis
@@ -374,7 +384,11 @@ impl Config {
 
         // data sources
         let mut price_feeds = match p.get("PRICE_FEED_SOURCES") {
-            None => vec!["coingecko".to_string(), "coinbase".to_string(), "kraken".to_string()],
+            None => vec![
+                "coingecko".to_string(),
+                "coinbase".to_string(),
+                "kraken".to_string(),
+            ],
             Some(s) => list(s),
         };
         if price_feeds.is_empty()
@@ -382,7 +396,9 @@ impl Config {
                 .iter()
                 .any(|f| !["coingecko", "coinbase", "kraken"].contains(&f.as_str()))
         {
-            p.err("PRICE_FEED_SOURCES must be a non-empty list of coingecko, coinbase, kraken".into());
+            p.err(
+                "PRICE_FEED_SOURCES must be a non-empty list of coingecko, coinbase, kraken".into(),
+            );
             price_feeds = Vec::new();
         }
         let eth_enabled = p.boolean("ETHEREUM_ENABLED", false);
@@ -405,7 +421,9 @@ impl Config {
                     p.err("BITCOIN_RPC_URL must be http(s)".into());
                 }
                 let user = p.nonempty("BITCOIN_RPC_USER").map(str::to_string);
-                let pw = p.nonempty("BITCOIN_RPC_PASSWORD").map(|s| Secret(s.to_string()));
+                let pw = p
+                    .nonempty("BITCOIN_RPC_PASSWORD")
+                    .map(|s| Secret(s.to_string()));
                 if user.is_some() != pw.is_some() {
                     p.err("BITCOIN_RPC_USER and BITCOIN_RPC_PASSWORD must be set together".into());
                 }

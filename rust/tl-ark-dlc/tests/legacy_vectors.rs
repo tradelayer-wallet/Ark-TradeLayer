@@ -3,7 +3,9 @@
 
 use serde_json::Value;
 use tl_ark_dlc::attestation::{decompose_numeric, Descriptor, NumericDescriptor};
-use tl_ark_dlc::handshake::{decode_witness_program, taproot_output_key, template_id_legacy, ArkTemplate};
+use tl_ark_dlc::handshake::{
+    decode_witness_program, taproot_output_key, template_id_legacy, ArkTemplate,
+};
 use tl_ark_dlc::hash::tagged_hash;
 use tl_ark_dlc::legacy;
 use tl_ark_dlc::util::{from_hex, hex32, to_hex};
@@ -38,7 +40,10 @@ fn hash_attestation_matches_legacy() {
     let rows = v["hash_attestation"].as_array().unwrap();
     assert!(rows.len() >= 10);
     for t in rows {
-        assert_eq!(to_hex(&legacy::hash_attestation(s(t, "outcome"))), s(t, "out"));
+        assert_eq!(
+            to_hex(&legacy::hash_attestation(s(t, "outcome"))),
+            s(t, "out")
+        );
     }
 }
 
@@ -181,7 +186,12 @@ fn legacy_template_id_and_canonical_json_match() {
             legacy::canonical_json(&tpl.semantics).to_string(),
             s(t, "canonical_semantics")
         );
-        assert_eq!(template_id_legacy(&tpl).unwrap(), s(t, "id"), "{}", s(t, "name"));
+        assert_eq!(
+            template_id_legacy(&tpl).unwrap(),
+            s(t, "id"),
+            "{}",
+            s(t, "name")
+        );
     }
     for c in v["canonical_json"].as_array().unwrap() {
         let input: Value = serde_json::from_str(s(c, "input")).unwrap();
@@ -196,7 +206,10 @@ fn legacy_template_id_collides_for_different_role_pairings() {
     let v = vectors();
     let rows = v["template_id"].as_array().unwrap();
     assert_eq!(s(&rows[0], "id"), s(&rows[1], "id"));
-    assert_ne!(rows[0]["template"]["leafScripts"], rows[1]["template"]["leafScripts"]);
+    assert_ne!(
+        rows[0]["template"]["leafScripts"],
+        rows[1]["template"]["leafScripts"]
+    );
 }
 
 #[test]

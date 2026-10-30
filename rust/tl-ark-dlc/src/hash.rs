@@ -38,7 +38,8 @@ impl Enc {
         if bytes.len() > MAX_FIELD_LEN {
             return Err(Error::TooLarge("encoded field"));
         }
-        self.0.extend_from_slice(&(bytes.len() as u32).to_be_bytes());
+        self.0
+            .extend_from_slice(&(bytes.len() as u32).to_be_bytes());
         self.0.extend_from_slice(bytes);
         Ok(self)
     }

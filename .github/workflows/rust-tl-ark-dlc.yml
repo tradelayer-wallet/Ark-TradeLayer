@@ -1,0 +1,65 @@
+name: Rust tl-ark-dlc (experimental)
+on:
+  pull_request:
+    paths: ['rust/tl-ark-dlc/**', '.github/workflows/rust-tl-ark-dlc.yml']
+  push:
+    branches: [main]
+    paths: ['rust/tl-ark-dlc/**', '.github/workflows/rust-tl-ark-dlc.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rust:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.90.0 --profile minimal --component rustfmt --component clippy
+      - name: Fetch pinned crates
+        working-directory: rust/tl-ark-dlc
+        run: cargo fetch --locked
+      - name: Unit and integration tests
+        working-directory: rust/tl-ark-dlc
+        run: cargo test --locked --offline
+      - name: Clippy
+        working-directory: rust/tl-ark-dlc
+        run: cargo clippy --locked --offline --all-targets -- -D warnings
+      - name: Format
+        working-directory: rust/tl-ark-dlc
+        run: cargo fmt --all -- --check
+      - name: Independent v1 message vectors are reproducible
+        working-directory: rust/tl-ark-dlc
+        run: node scripts/v1-vectors.mjs | diff - fixtures/v1_vectors.json
+      - name: Legacy vectors are reproducible (needs Node with module.registerHooks)
+        working-directory: rust/tl-ark-dlc
+        run: |
+          if node -e 'process.exit(typeof require("node:module").registerHooks === "function" ? 0 : 1)'; then
+            node --experimental-transform-types scripts/compare-legacy.mjs ../.. | diff - fixtures/legacy_vectors.json
+          else
+            echo "node $(node --version) lacks module.registerHooks; legacy regeneration skipped"
+          fi
+  lean:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install elan
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Build proofs
+        working-directory: rust/tl-ark-dlc/lean
+        run: lake build
+      - name: Reject sorry/admit
+        working-directory: rust/tl-ark-dlc/lean
+        run: "! grep -rnE '(^|[^A-Za-z_.])sorry([^A-Za-z_]|$)|^[[:space:]]*admit[[:space:]]*$' --include=*.lean ."
+      - name: Axiom audit
+        working-directory: rust/tl-ark-dlc/lean
+        run: |
+          lake env lean AxiomCheck.lean | tee axioms.txt
+          ! grep -q sorryAx axioms.txt
