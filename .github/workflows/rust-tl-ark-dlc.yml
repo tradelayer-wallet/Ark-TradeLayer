@@ -3,7 +3,7 @@ on:
   pull_request:
     paths: ['rust/tl-ark-dlc/**', '.github/workflows/rust-tl-ark-dlc.yml']
   push:
-    branches: [main]
+    branches: [main, feat/rust-port]
     paths: ['rust/tl-ark-dlc/**', '.github/workflows/rust-tl-ark-dlc.yml']
   workflow_dispatch:
 permissions:
