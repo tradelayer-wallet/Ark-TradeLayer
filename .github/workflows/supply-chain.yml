@@ -2,6 +2,9 @@ name: Rust supply chain
 on:
   pull_request:
     paths: ['rust/**', '.github/workflows/supply-chain.yml']
+  push:
+    branches: [feat/rust-port]
+    paths: ['rust/**', '.github/workflows/supply-chain.yml']
   schedule:
     # Weekly: new RustSec advisories can affect unchanged lockfiles.
     - cron: '17 4 * * 1'
